@@ -30,7 +30,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:3000/login', { aadhar, dob });
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_LINK}/login`, { aadhar, dob });
 
       setTimeout(() => {
         if (response.data.voted) {

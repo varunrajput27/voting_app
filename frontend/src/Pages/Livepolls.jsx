@@ -28,8 +28,8 @@ const Livepolls = () => {
     const fetchData = async () => {
       try {
         const [notifRes, candRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/election/details'),
-          axios.get('http://localhost:3000/candidates'),
+          axios.get(`${import.meta.env.VITE_BACKEND_LINK}/election/details`),
+          axios.get(`${import.meta.env.VITE_BACKEND_LINK}/candidates`),
         ]);
 
         const uniquePosts = [...new Set(notifRes.data.map((n) => n.electionPost))];

@@ -11,7 +11,7 @@ const Notification = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/election/details")
+      .get(`${import.meta.env.VITE_BACKEND_LINK}/api/election/details`)
       .then((response) => {
         setNotifications(response.data);
         setLoading(false);

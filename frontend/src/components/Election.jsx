@@ -15,7 +15,7 @@ const ElectionPage = () => {
   useEffect(() => {
     const fetchElections = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/elections');
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_LINK}/elections`);
         setElections(res.data);
       } catch (err) {
         console.error('Error fetching elections:', err);
@@ -27,8 +27,8 @@ const ElectionPage = () => {
   const enterElection = async (electionPost) => {
     try {
       const [candidatesRes, voteStatusRes] = await Promise.all([
-        axios.get(`http://localhost:3000/candidates/${electionPost}`),
-        axios.post('http://localhost:3000/vote/status', {
+        axios.get(`${import.meta.env.VITE_BACKEND_LINK}/candidates/${electionPost}`),
+        axios.post(`${import.meta.env.VITE_BACKEND_LINK}/vote/status`, {
           aadhar,
           electionPost,
         }),
@@ -49,7 +49,7 @@ const ElectionPage = () => {
 
   const handleVote = async (candidateId) => {
     try {
-      const res = await axios.post('http://localhost:3000/vote', {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_LINK}/vote`, {
         aadhar,
         candidateId,
         electionPost: activeElection,
@@ -58,7 +58,7 @@ const ElectionPage = () => {
       alert(res.data.message);
       setVotedElectionIds((prev) => [...prev, activeElection]);
 
-      const candidatesRes = await axios.get(`http://localhost:3000/candidates/${activeElection}`);
+      const candidatesRes = await axios.get(`${import.meta.env.VITE_BACKEND_LINK}/candidates/${activeElection}`);
       setCandidates(candidatesRes.data);
     } catch (err) {
       alert(err.response?.data?.message || 'Vote failed');

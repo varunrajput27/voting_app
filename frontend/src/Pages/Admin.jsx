@@ -44,7 +44,7 @@ export default function Admin() {
   async function fetchNotifications() {
     setLoadingNotifications(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/election/fetchdetails");
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_LINK}/api/election/fetchdetails`);
       setNotifications(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Failed to fetch notifications", error);
@@ -62,7 +62,7 @@ export default function Admin() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/election/send-details", formData);
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_LINK}/api/election/send-details`, formData);
       toast.success(response.data.message || "Notification sent successfully!");
       setFormData({ electionPost: "", location: "", message: "" });
     } catch (error) {
@@ -81,7 +81,7 @@ export default function Admin() {
     });
 
     try {
-      const response = await axios.post(`http://localhost:3000/end-election/${id}`);
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_LINK}/end-election/${id}`);
       if (response.status === 200) {
         toast.success("Election ended successfully.");
         fetchNotifications();
@@ -108,7 +108,7 @@ export default function Admin() {
     if (!window.confirm("Are you sure you want to delete this election?")) return;
 
     try {
-      const response = await axios.delete(`http://localhost:3000/api/election/delete-details/${id}`);
+      const response = await axios.delete(`${import.meta.env.VITE_BACKEND_LINK}/api/election/delete-details/${id}`);
       if (response.status === 200) {
         setNotifications((prev) => prev.filter((n) => n._id !== id));
         setDisabledEndButtons((prev) => {

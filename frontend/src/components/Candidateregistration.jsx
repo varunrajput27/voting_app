@@ -91,7 +91,7 @@ const CandidateRegistration = () => {
       formData.append('partysign', partyLogoFile);
 
       const response = await axios.post(
-        'http://localhost:3000/register',
+        `${import.meta.env.VITE_BACKEND_LINK}/register`,
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
