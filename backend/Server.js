@@ -14,6 +14,12 @@ const app = express();
 app.use(cors());
 
 
+app.use(cors({ 
+    origin:'https://voting-frontend-six.vercel.app',
+    credentials: true
+  }));
+
+
 // Parse JSON bodies
 app.use(express.json());
 
