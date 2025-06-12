@@ -13,12 +13,15 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 
+
 // Parse JSON bodies
 app.use(express.json());
 
 // Multer setup for memory storage
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+
 
 //Login  fro voters
 app.post('/login', async (req, res) => {
