@@ -1,6 +1,5 @@
 const express = require("express");
 const multer = require("multer");
-const cors = require("cors");
 const db=require("./db")
 const Voter = require("./models/voter");
 const Vote = require('./models/Vote');  
@@ -11,13 +10,14 @@ const PORT = process.env.PORT || 3000;
 
 
 const app = express();
-app.use(cors());
+
 
 
 const cors = require("cors");
 
 const allowedOrigins = [
-  'https://voting-frontend-six.vercel.app'
+  'https://voting-frontend-six.vercel.app',
+  'http://localhost:5173' // add this for local testing
 ];
 
 app.use(cors({
