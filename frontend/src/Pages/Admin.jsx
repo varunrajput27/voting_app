@@ -4,7 +4,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-
 import { CheckCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 const pageTransition = {
@@ -23,11 +22,8 @@ export default function Admin() {
 
   const [notifications, setNotifications] = useState([]);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
-
-  // Disabled buttons state with localStorage sync
   const [disabledEndButtons, setDisabledEndButtons] = useState({});
 
-  // Load disabled buttons state from localStorage on mount
   useEffect(() => {
     const savedDisabledButtons = localStorage.getItem("disabledEndButtons");
     if (savedDisabledButtons) {
@@ -48,14 +44,8 @@ export default function Admin() {
   async function fetchNotifications() {
     setLoadingNotifications(true);
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/election/fetchdetails"
-      );
-      if (Array.isArray(response.data)) {
-        setNotifications(response.data);
-      } else {
-        setNotifications([]);
-      }
+      const response = await axios.get("http://localhost:3000/api/election/fetchdetails");
+      setNotifications(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Failed to fetch notifications", error);
       toast.error("Failed to load notifications");
@@ -72,16 +62,9 @@ export default function Admin() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/election/send-details",
-        formData
-      );
+      const response = await axios.post("http://localhost:3000/api/election/send-details", formData);
       toast.success(response.data.message || "Notification sent successfully!");
-      setFormData({
-        electionPost: "",
-        location: "",
-        message: "",
-      });
+      setFormData({ electionPost: "", location: "", message: "" });
     } catch (error) {
       console.error(error);
       toast.error("Error sending notification");
@@ -89,14 +72,8 @@ export default function Admin() {
   }
 
   async function handleEndElection(id) {
-    if (
-      !window.confirm(
-        "Are you sure you want to end this election and declare a winner?"
-      )
-    )
-      return;
+    if (!window.confirm("Are you sure you want to end this election and declare a winner?")) return;
 
-    // Disable button immediately & save in localStorage
     setDisabledEndButtons((prev) => {
       const updated = { ...prev, [id]: true };
       localStorage.setItem("disabledEndButtons", JSON.stringify(updated));
@@ -107,45 +84,39 @@ export default function Admin() {
       const response = await axios.post(`http://localhost:3000/end-election/${id}`);
       if (response.status === 200) {
         toast.success("Election ended successfully.");
-        // Optionally refresh notifications list after ending election:
         fetchNotifications();
       } else {
         toast.error("Failed to end election.");
-        setDisabledEndButtons((prev) => {
-          const updated = { ...prev, [id]: false };
-          localStorage.setItem("disabledEndButtons", JSON.stringify(updated));
-          return updated;
-        });
+        undoDisable(id);
       }
     } catch (error) {
       console.error(error);
       toast.error("Error ending election.");
-      setDisabledEndButtons((prev) => {
-        const updated = { ...prev, [id]: false };
-        localStorage.setItem("disabledEndButtons", JSON.stringify(updated));
-        return updated;
-      });
+      undoDisable(id);
     }
+  }
+
+  function undoDisable(id) {
+    setDisabledEndButtons((prev) => {
+      const updated = { ...prev, [id]: false };
+      localStorage.setItem("disabledEndButtons", JSON.stringify(updated));
+      return updated;
+    });
   }
 
   async function handleDelete(id) {
     if (!window.confirm("Are you sure you want to delete this election?")) return;
 
     try {
-      const response = await axios.delete(
-        `http://localhost:3000/api/election/delete-details/${id}`
-      );
+      const response = await axios.delete(`http://localhost:3000/api/election/delete-details/${id}`);
       if (response.status === 200) {
         setNotifications((prev) => prev.filter((n) => n._id !== id));
-
-        // Remove disabled state from localStorage for deleted id
         setDisabledEndButtons((prev) => {
           const updated = { ...prev };
           delete updated[id];
           localStorage.setItem("disabledEndButtons", JSON.stringify(updated));
           return updated;
         });
-
         toast.success("Election deleted successfully");
       }
     } catch (error) {
@@ -164,18 +135,19 @@ export default function Admin() {
         animate="animate"
         exit="exit"
         transition={{ duration: 0.4 }}
-        className="bg-gray-50 min-h-screen py-12 px-4 sm:px-6"
+        className="bg-gray-50 min-h-screen py-10 px-4 sm:px-6 lg:px-8"
       >
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-10  mb-16">
-          <h1 className="text-5xl font-bold mb-16 text-center text-blue-700">
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-10 mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-12 text-center text-blue-700">
             Admin Control Panel
           </h1>
 
+          {/* Tab buttons */}
           <div className="flex justify-center mb-10">
-            <div className="inline-flex bg-gray-100 rounded-full p-1 space-x-2 shadow-inner">
+            <div className="flex flex-wrap justify-center bg-gray-100 rounded-full p-1 shadow-inner space-x-0 sm:space-x-2 gap-2">
               <button
                 onClick={() => setActiveTab("sendElection")}
-                className={`px-6 py-2 rounded-full font-medium transition cursor-pointer ${
+                className={`px-4 py-2 text-sm sm:px-6 sm:py-2 rounded-full font-medium transition ${
                   activeTab === "sendElection"
                     ? "bg-blue-600 text-white"
                     : "text-gray-700 hover:text-blue-600"
@@ -185,7 +157,7 @@ export default function Admin() {
               </button>
               <button
                 onClick={() => setActiveTab("removeElection")}
-                className={`px-6 py-2 rounded-full font-medium transition  cursor-pointer ${
+                className={`px-4 py-2 text-sm sm:px-6 sm:py-2 rounded-full font-medium transition ${
                   activeTab === "removeElection"
                     ? "bg-blue-600 text-white"
                     : "text-gray-700 hover:text-blue-600"
@@ -196,17 +168,15 @@ export default function Admin() {
             </div>
           </div>
 
+          {/* Form section */}
           {activeTab === "sendElection" && (
             <form
               onSubmit={handleSubmit}
-              className="max-w-xl mx-auto space-y-6 text-gray-800"
+              className="space-y-6 text-gray-800"
               noValidate
             >
               <div>
-                <label
-                  htmlFor="electionPost"
-                  className="block mb-2 font-semibold text-gray-700"
-                >
+                <label htmlFor="electionPost" className="block mb-2 font-semibold text-gray-700">
                   Election Post
                 </label>
                 <input
@@ -221,10 +191,7 @@ export default function Admin() {
                 />
               </div>
               <div>
-                <label
-                  htmlFor="location"
-                  className="block mb-2 font-semibold text-gray-700"
-                >
+                <label htmlFor="location" className="block mb-2 font-semibold text-gray-700">
                   State, Country
                 </label>
                 <input
@@ -239,10 +206,7 @@ export default function Admin() {
                 />
               </div>
               <div>
-                <label
-                  htmlFor="message"
-                  className="block mb-2 font-semibold text-gray-700"
-                >
+                <label htmlFor="message" className="block mb-2 font-semibold text-gray-700">
                   Message
                 </label>
                 <textarea
@@ -258,67 +222,46 @@ export default function Admin() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 cursor-pointer"
+                className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
                 Send Notification
               </button>
             </form>
           )}
 
+          {/* Notifications section */}
           {activeTab === "removeElection" && (
-            <div className="max-w-xl mx-auto">
+            <div className="space-y-6">
               {loadingNotifications ? (
                 <div className="flex justify-center my-6">
-                  <svg
-                    className="animate-spin h-8 w-8 text-blue-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v8z"
-                    />
+                  <svg className="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                   </svg>
                 </div>
               ) : notifications.length === 0 ? (
-                <p className="text-center text-gray-500">
-                  No notifications found.
-                </p>
+                <p className="text-center text-gray-500">No notifications found.</p>
               ) : (
                 <ul className="space-y-6">
                   {notifications.map((notification) => (
                     <motion.li
                       key={notification._id}
-                      className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm hover:shadow-lg transition"
+                      className="bg-white border border-gray-200 p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-lg transition"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                     >
-                      <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-start justify-between mb-4 flex-wrap gap-2">
                         <div>
-                          <h3 className="text-xl font-semibold text-gray-800">
-                            {notification.electionPost}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            {notification.location}
-                          </p>
+                          <h3 className="text-lg sm:text-xl font-semibold text-gray-800">{notification.electionPost}</h3>
+                          <p className="text-sm text-gray-500">{notification.location}</p>
                         </div>
                         <CheckCircleIcon className="w-6 h-6 text-green-500" />
                       </div>
-                      <div className="flex space-x-3 mt-2">
+                      <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0 mt-4">
                         <button
                           onClick={() => handleEndElection(notification._id)}
                           disabled={disabledEndButtons[notification._id]}
-                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white text-sm font-semibold transition  cursor-pointer ${
+                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white text-sm font-semibold transition ${
                             disabledEndButtons[notification._id]
                               ? "bg-gray-400 cursor-not-allowed"
                               : "bg-green-600 hover:bg-green-700"
@@ -328,7 +271,7 @@ export default function Admin() {
                         </button>
                         <button
                           onClick={() => handleDelete(notification._id)}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-md cursor-pointer "
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-md"
                         >
                           <TrashIcon className="w-4 h-4" /> Delete Election
                         </button>
