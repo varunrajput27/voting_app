@@ -5,6 +5,7 @@ const Voter = require("./models/voter");
 const Vote = require('./models/Vote');  
 const Candidate = require("./models/Candidate");
 const ElectionDetail = require("./models/ElectionDetail");
+
 require('dotenv').config(); // ✅ Correct loading of .env file
 const PORT = process.env.PORT || 3000;
 
@@ -15,22 +16,11 @@ const app = express();
 
 const cors = require("cors");
 
-const allowedOrigins = [
-  'https://voting-frontend-six.vercel.app',
-  'http://localhost:5173' // add this for local testing
-];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+app.use(cors({ 
+    origin:'https://todo-frontend-umber-tau.vercel.app',
+    credentials: true
+  }));
 
 
 
