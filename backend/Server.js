@@ -18,7 +18,7 @@ const cors = require("cors");
 
 
 app.use(cors({ 
-    origin:'https://todo-frontend-umber-tau.vercel.app',
+    origin:'https://voting-frontend-neon.vercel.app',
     credentials: true
   }));
 
