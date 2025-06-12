@@ -28,7 +28,7 @@ const Livepolls = () => {
     const fetchData = async () => {
       try {
         const [notifRes, candRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_BACKEND_LINK}/election/details`),
+          axios.get(`${import.meta.env.VITE_BACKEND_LINK}/api/election/details`),
           axios.get(`${import.meta.env.VITE_BACKEND_LINK}/candidates`),
         ]);
 
