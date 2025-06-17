@@ -17,7 +17,7 @@ const cors = require("cors");
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://voting-frontend-bice.vercel.app'
+  'https://voting-frontend-mu.vercel.app'
 ];
 
 app.use(cors({
