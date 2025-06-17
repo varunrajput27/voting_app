@@ -20,7 +20,7 @@ const Hero = () => {
     >
       <div className="h-full bg-gradient-to-r from-blue-950 to-blue-900 flex items-center justify-center px-4 sm:px-6">
         <div className="text-center max-w-xl space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-white tracking-wide ">
+          <h1 className="text-3xl md:text-4xl font-bold text-white tracking-wide">
             VoteNow
           </h1>
           <p className="text-blue-300 text-base md:text-lg italic leading-relaxed">
