@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Footer = () => {
   return (
     <footer className="bg-gradient-to-br from-green-100 via-white to-green-50 text-gray-800 pt-16 pb-8 px-6 border-t border-green-200 shadow-inner">
@@ -8,7 +6,7 @@ const Footer = () => {
         {/* Branding */}
         <div>
           <h2 className="text-3xl font-extrabold text-green-800 tracking-wide mb-3">
-            Online Voting
+            VoteNow
           </h2>
           <p className="text-gray-600 leading-relaxed max-w-xs">
             Empowering democratic participation through modern and secure technology.
@@ -106,7 +104,7 @@ const Footer = () => {
 
       {/* Copyright */}
       <div className="mt-12 text-center text-sm text-gray-600 font-semibold">
-        &copy; {new Date().getFullYear()} Online Voting • Built with ❤️ 
+        &copy; {new Date().getFullYear()} VoteNow • Built with ❤️ 
       </div>
     </footer>
   );

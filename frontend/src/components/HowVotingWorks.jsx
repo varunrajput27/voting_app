@@ -4,8 +4,8 @@ import { FaVoteYea, FaPoll, FaSignOutAlt, FaSignInAlt, FaRegEye, FaCheckCircle }
 const HowVotingWorks = () => {
   const steps = [
     {
-      title: 'Register or Log In',
-      description: 'Create an account or log in to securely access the voting system.',
+      title: ' Log In',
+      description: ' use  Aadharcard number  log in to securely access the voting system.',
       icon: <FaSignInAlt className="text-white text-2xl" />,
     },
     {

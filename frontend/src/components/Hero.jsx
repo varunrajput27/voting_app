@@ -21,10 +21,10 @@ const Hero = () => {
       <div className="h-full bg-gradient-to-r from-blue-950 to-blue-900 flex items-center justify-center px-4 sm:px-6">
         <div className="text-center max-w-xl space-y-4">
           <h1 className="text-3xl md:text-4xl font-bold text-white tracking-wide uppercase">
-            Online Voting
+            VoteNow
           </h1>
           <p className="text-blue-300 text-base md:text-lg italic leading-relaxed">
-            "Online voting is not just convenience. It’s participation, inclusion, and modernization."
+            "VoteNow is not just convenience. It’s participation, inclusion, and modernization."
           </p>
           <button
             onClick={handleGoToPortal}

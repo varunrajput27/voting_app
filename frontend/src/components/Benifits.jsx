@@ -61,7 +61,7 @@ const Benefits = () => {
     >
       <div className="max-w-7xl mx-auto text-center">
         <h2 className="text-4xl font-extrabold text-white mb-10 tracking-wide drop-shadow-lg">
-          Why Choose Online Voting?
+          Why Choose VoteNow?
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
