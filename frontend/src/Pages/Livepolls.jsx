@@ -24,7 +24,6 @@ const Livepolls = () => {
   const [openResultSection, setOpenResultSection] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -174,14 +173,13 @@ const Livepolls = () => {
                           {postCandidates.map((candidate, i) => (
                             <div
                               key={candidate._id || i}
-                              className={`flex flex-col sm:flex-row items-center justify-between p-4 rounded-xl border transition-shadow duration-300 ${
+                              className={`flex flex-row items-center justify-between p-4 rounded-xl border transition-shadow duration-300 ${
                                 i === 0 && (candidate.votes || 0) > 0
                                   ? 'bg-yellow-100 border-yellow-500 shadow-lg'
                                   : 'bg-white border-gray-300 hover:shadow-md'
                               }`}
                             >
-                              {/* Profile Pic and Party Logo stacked vertically on mobile */}
-                              <div className="flex flex-col items-center sm:flex-row sm:items-center sm:space-x-4 flex-shrink-0 mb-4 sm:mb-0">
+                              <div className="flex items-center space-x-4">
                                 <img
                                   src={
                                     candidate.profilepic
@@ -199,23 +197,21 @@ const Livepolls = () => {
                                       : '/default-sign.png'
                                   }
                                   alt={`${candidate.party || 'Party'} Sign`}
-                                  className="w-12 h-12 object-contain mt-2 sm:mt-0"
+                                  className="w-12 h-12 object-contain"
                                   loading="lazy"
                                 />
                               </div>
 
-                              {/* Name and slogan */}
-                              <div className="flex flex-col justify-center ml-0 sm:ml-4 flex-grow min-w-0 text-center sm:text-left">
+                              <div className="flex flex-col justify-center ml-4 flex-grow min-w-0">
                                 <p className="font-semibold text-gray-900 truncate">{candidate.name || 'Unnamed'}</p>
                                 <p className="text-sm text-gray-600 truncate">{candidate.partyslogan || 'No Slogan'}</p>
                               </div>
 
-                              {/* Votes */}
-                              <div className="flex flex-col items-end min-w-[60px] mt-3 sm:mt-0">
+                              <div className="flex flex-col items-end min-w-[60px]">
                                 <p className="text-2xl font-bold text-blue-900">{candidate.votes || 0}</p>
                                 <p className="text-xs font-medium text-gray-500 select-none">votes</p>
                                 {i === 0 && (candidate.votes || 0) > 0 && (
-                                  <div className="mt-1 text-green-700 font-semibold text-xs flex items-center space-x-1 select-none justify-end">
+                                  <div className="mt-1 text-green-700 font-semibold text-xs flex items-center space-x-1 select-none">
                                     <span>🏆</span>
                                     <span>Leading</span>
                                   </div>
@@ -295,8 +291,12 @@ const Livepolls = () => {
 
                         const winner = topCandidates[0];
                         return (
-                          <div className="flex flex-col sm:flex-row items-center space-x-0 sm:space-x-8 p-7 rounded-xl bg-green-100 border-l-8 border-green-700 shadow-lg">
-                            <div className="flex flex-col items-center sm:flex-row sm:items-center sm:space-x-6 flex-shrink-0 mb-4 sm:mb-0">
+                          <div
+                            className="p-7 rounded-xl bg-green-100 border-l-8 border-green-700 shadow-lg"
+                            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                          >
+                            {/* Winner details stacked vertically on mobile */}
+                            <div className="flex flex-col items-center space-y-3 sm:flex-row sm:space-y-0 sm:space-x-8 w-full max-w-xl">
                               <img
                                 src={
                                   winner.profilepic
@@ -314,24 +314,25 @@ const Livepolls = () => {
                                     : '/default-sign.png'
                                 }
                                 alt={`${winner.party || 'Party'} Sign`}
-                                className="w-16 h-16 object-contain mt-2 sm:mt-0"
+                                className="w-16 h-16 object-contain"
                                 loading="lazy"
                               />
-                            </div>
-                            <div className="flex flex-col justify-center flex-grow min-w-0 text-center sm:text-left">
-                              {/* Name always visible */}
-                              <p className="font-bold text-xl text-blue-900 truncate max-w-xs mx-auto sm:mx-0">
-                                {winner.name || 'Unnamed Winner'}
-                              </p>
-                              <p className="text-base italic text-gray-800 truncate max-w-xs mx-auto sm:mx-0">
-                                {winner.partyslogan || 'No slogan available'}
-                              </p>
-                            </div>
-                            <div className="text-right min-w-[100px] mt-4 sm:mt-0">
-                              <p className="text-3xl font-extrabold text-blue-900">{winner.votes || 0}</p>
-                              <div className="mt-2 text-green-800 font-semibold text-lg flex items-center justify-center space-x-2 select-none">
-                                <span>🏆</span>
-                                <span>Winner</span>
+
+                              <div className="flex flex-col justify-center flex-grow min-w-0 text-center sm:text-left px-0 sm:px-4">
+                                <p className="font-bold text-xl text-blue-900 truncate max-w-xs">
+                                  {winner.name || 'Unnamed Winner'}
+                                </p>
+                                <p className="text-base italic text-gray-800 truncate max-w-xs">
+                                  {winner.partyslogan || 'No slogan available'}
+                                </p>
+                              </div>
+
+                              <div className="text-center sm:text-right min-w-[100px] mt-4 sm:mt-0">
+                                <p className="text-3xl font-extrabold text-blue-900">{winner.votes || 0}</p>
+                                <div className="mt-2 text-green-800 font-semibold text-lg flex items-center justify-center space-x-2 select-none">
+                                  <span>🏆</span>
+                                  <span>Winner</span>
+                                </div>
                               </div>
                             </div>
                           </div>
