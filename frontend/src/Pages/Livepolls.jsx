@@ -25,10 +25,7 @@ const Livepolls = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
-
-  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top
     const fetchData = async () => {
       try {
         const [notifRes, candRes] = await Promise.all([
@@ -83,22 +80,21 @@ const Livepolls = () => {
   return (
     <>
       <Navbar />
-
       <motion.main
         variants={pageTransition}
         initial="initial"
         animate="animate"
         exit="exit"
-        className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-white text-gray-900 pt-12 pb-16 px-4 sm:px-6 md:px-12 max-w-6xl mx-auto"
+        className="min-h-screen bg-gradient-to-br from-blue-50 to-white pt-12 pb-16 px-4 sm:px-6 md:px-12 max-w-6xl mx-auto"
       >
-        <h1 className="text-4xl md:text-5xl font-extrabold text-center text-blue-900 mb-12 tracking-tight drop-shadow-lg select-none">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-blue-900 mb-10">
           Election Leaderboard
         </h1>
 
         {loading ? (
-          <p className="text-center text-lg text-gray-600 select-none">Loading elections...</p>
+          <p className="text-center text-lg text-gray-600">Loading elections...</p>
         ) : posts.length === 0 ? (
-          <p className="text-center text-lg text-gray-600 select-none">No election posts found.</p>
+          <p className="text-center text-lg text-gray-600">No election posts found.</p>
         ) : (
           posts.map((post) => {
             const isOpen = openSection === post;
@@ -109,231 +105,120 @@ const Livepolls = () => {
             return (
               <section
                 key={post}
-                className={`mb-10 rounded-2xl shadow-lg border-l-8 p-6 flex flex-col bg-white transition-colors duration-300 ${
-                  isEnded ? 'border-green-700 bg-green-50 hover:shadow-xl' : 'border-blue-700 hover:shadow-xl'
-                }`}
-                aria-labelledby={`${post}-title`}
+                className={`mb-10 p-6 rounded-xl shadow-lg bg-white border-l-8 ${isEnded ? 'border-green-700' : 'border-blue-700'}`}
               >
-                <div className="flex justify-between items-center flex-wrap gap-4 mb-5">
-                  <h2
-                    id={`${post}-title`}
-                    className="text-2xl md:text-3xl font-semibold text-blue-900 select-none tracking-tight"
-                  >
-                    {post} Election
-                  </h2>
-
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <h2 className="text-2xl font-semibold text-blue-900">{post} Election</h2>
+                  <div className="flex flex-col sm:flex-row items-center gap-3">
                     {isEnded && (
-                      <span className="inline-block bg-green-800 text-white font-semibold px-5 py-2 rounded-full shadow select-none uppercase tracking-wide text-center">
+                      <span className="bg-green-800 text-white px-4 py-1 rounded-full text-sm font-semibold">
                         Result Declared
                       </span>
                     )}
+                    <motion.button
+                      onClick={() => isEnded ? toggleResultSection(post) : toggleSection(post)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white px-5 py-2 rounded-md font-semibold"
+                    >
+                      {isEnded
+                        ? isResultOpen ? 'Hide Result' : 'See Result'
+                        : isOpen ? 'Close Live Polls' : 'Open Live Polls'}
+                    </motion.button>
 
-                    {isEnded ? (
-                      <motion.button
-                        onClick={() => toggleResultSection(post)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="bg-blue-800 hover:bg-blue-900 text-white font-semibold px-6 py-2 rounded-lg shadow-md focus:outline-none focus:ring-4 focus:ring-blue-400 transition cursor-pointer uppercase tracking-wide text-center"
-                        aria-expanded={isResultOpen}
-                        aria-controls={`result-section-${post}`}
-                      >
-                        {isResultOpen ? 'Hide Result' : 'See Result'}
-                      </motion.button>
-                    ) : (
-                      <motion.button
-                        onClick={() => toggleSection(post)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="bg-blue-800 hover:bg-blue-900 text-white font-semibold px-6 py-2 rounded-lg shadow-md focus:outline-none focus:ring-4 focus:ring-blue-400 transition cursor-pointer uppercase tracking-wide text-center"
-                        aria-expanded={isOpen}
-                        aria-controls={`section-${post}`}
-                      >
-                        {isOpen ? 'Close Live Polls' : 'Open Live Polls'}
-                      </motion.button>
-                    )}
                   </div>
                 </div>
 
-                {/* Live Poll Section */}
-                <AnimatePresence initial={false}>
+                {/* LIVE POLLS */}
+                <AnimatePresence>
                   {!isEnded && isOpen && (
                     <motion.div
-                      id={`section-${post}`}
                       variants={slideUpFade}
                       initial="initial"
                       animate="animate"
                       exit="exit"
-                      className="overflow-hidden"
+                      className="mt-5 space-y-4"
                     >
-                      {postCandidates.length === 0 ? (
-                        <p className="text-gray-600 text-lg select-none">No candidates available.</p>
-                      ) : (
-                        <div className="space-y-4">
-                          {postCandidates.map((candidate, i) => (
-                            <div
-                              key={candidate._id || i}
-                              className={`flex flex-row items-center justify-between p-4 rounded-xl border transition-shadow duration-300 ${
-                                i === 0 && (candidate.votes || 0) > 0
-                                  ? 'bg-yellow-100 border-yellow-500 shadow-lg'
-                                  : 'bg-white border-gray-300 hover:shadow-md'
-                              }`}
-                            >
-                              <div className="flex items-center space-x-4">
-                                <img
-                                  src={
-                                    candidate.profilepic
-                                      ? `data:image/jpeg;base64,${candidate.profilepic}`
-                                      : '/default-profile.png'
-                                  }
-                                  alt={`${candidate.name || 'Candidate'} Profile`}
-                                  className="w-16 h-16 rounded-full object-cover ring-4 ring-blue-400"
-                                  loading="lazy"
-                                />
-                                <img
-                                  src={
-                                    candidate.partysign
-                                      ? `data:image/jpeg;base64,${candidate.partysign}`
-                                      : '/default-sign.png'
-                                  }
-                                  alt={`${candidate.party || 'Party'} Sign`}
-                                  className="w-12 h-12 object-contain"
-                                  loading="lazy"
-                                />
-                              </div>
-
-                              <div className="flex flex-col justify-center ml-4 flex-grow min-w-0">
-                                <p className="font-semibold text-gray-900 truncate">{candidate.name || 'Unnamed'}</p>
-                                <p className="text-sm text-gray-600 truncate">{candidate.partyslogan || 'No Slogan'}</p>
-                              </div>
-
-                              <div className="flex flex-col items-end min-w-[60px]">
-                                <p className="text-2xl font-bold text-blue-900">{candidate.votes || 0}</p>
-                                <p className="text-xs font-medium text-gray-500 select-none">votes</p>
-                                {i === 0 && (candidate.votes || 0) > 0 && (
-                                  <div className="mt-1 text-green-700 font-semibold text-xs flex items-center space-x-1 select-none">
-                                    <span>🏆</span>
-                                    <span>Leading</span>
-                                  </div>
-                                )}
-                              </div>
+                      {postCandidates.map((candidate, idx) => (
+                        <div
+                          key={candidate._id || idx}
+                          className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg border transition-shadow ${idx === 0 && (candidate.votes || 0) > 0 ? 'bg-yellow-100 border-yellow-400' : 'bg-white border-gray-300 hover:shadow-md'}`}
+                        >
+                          <div className="flex flex-col items-center sm:flex-row sm:items-start gap-3 sm:gap-5 w-full sm:w-auto">
+                            <div className="flex flex-col items-center">
+                              <img
+                                src={candidate.profilepic ? `data:image/jpeg;base64,${candidate.profilepic}` : '/default-profile.png'}
+                                className="w-16 h-16 rounded-full object-cover ring-2 ring-blue-400"
+                                alt="Candidate"
+                              />
+                              <img
+                                src={candidate.partysign ? `data:image/png;base64,${candidate.partysign}` : '/default-sign.png'}
+                                className="w-10 h-10 object-contain mt-2"
+                                alt="Party Sign"
+                              />
                             </div>
-                          ))}
+                            <div className="text-center sm:text-left">
+                              <p className="font-bold text-gray-800">{candidate.name}</p>
+                              <p className="text-sm text-gray-600">{candidate.partyslogan || 'No slogan'}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xl font-bold text-blue-900">{candidate.votes || 0}</p>
+                            <p className="text-sm text-gray-500">Votes</p>
+                            {idx === 0 && (candidate.votes || 0) > 0 && (
+                              <p className="text-green-600 text-sm font-semibold flex items-center justify-end gap-1 mt-1">
+                                🏆 Leading
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      )}
+                      ))}
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                {/* Result Section */}
-                <AnimatePresence initial={false}>
+                {/* RESULT SECTION */}
+                <AnimatePresence>
                   {isEnded && isResultOpen && (
                     <motion.div
-                      id={`result-section-${post}`}
                       variants={slideUpFade}
                       initial="initial"
                       animate="animate"
                       exit="exit"
-                      className="overflow-hidden"
+                      className="mt-5"
                     >
                       {(() => {
                         const topVotes = postCandidates[0]?.votes || 0;
                         const topCandidates = postCandidates.filter((c) => (c.votes || 0) === topVotes);
-
                         if (topCandidates.length > 1) {
                           return (
-                            <div>
-                              <p className="text-red-700 font-bold text-lg mb-6 select-none flex items-center space-x-3">
-                                <span className="text-2xl">⚠️</span>
-                                <span>Draw - No winner declared</span>
-                              </p>
-                              <div className="space-y-5">
-                                {postCandidates.map((candidate, i) => (
-                                  <div
-                                    key={candidate._id || i}
-                                    className="flex flex-wrap items-center space-x-6 p-5 rounded-xl bg-yellow-100 border-l-8 border-yellow-500 shadow-lg"
-                                  >
-                                    <img
-                                      src={
-                                        candidate.profilepic
-                                          ? `data:image/jpeg;base64,${candidate.profilepic}`
-                                          : '/default-profile.png'
-                                      }
-                                      alt={`${candidate.name || 'Candidate'} Profile`}
-                                      className="w-16 h-16 rounded-full object-cover ring-4 ring-blue-400 flex-shrink-0"
-                                      loading="lazy"
-                                    />
-                                    <div className="flex-grow min-w-0">
-                                      <img
-                                        src={
-                                          candidate.partysign
-                                            ? `data:image/jpeg;base64,${candidate.partysign}`
-                                            : '/default-sign.png'
-                                        }
-                                        alt={`${candidate.party || 'Party'} Sign`}
-                                        className="w-14 h-14 object-contain mt-1 mb-2"
-                                        loading="lazy"
-                                      />
-                                      <p className="text-sm italic text-gray-700 truncate max-w-xs">
-                                        {candidate.partyslogan || 'No slogan available'}
-                                      </p>
-                                    </div>
-                                    <div className="text-right min-w-[90px]">
-                                      <p className="text-2xl font-bold text-blue-900">{candidate.votes || 0}</p>
-                                      <p className="text-xs font-medium text-gray-500 select-none">votes</p>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
+                            <div className="text-center text-red-700 font-semibold">
+                              ⚠️ It's a draw! No winner declared.
                             </div>
                           );
                         }
-
                         const winner = topCandidates[0];
                         return (
-                          <div
-                            className="p-7 rounded-xl bg-green-100 border-l-8 border-green-700 shadow-lg"
-                            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-                          >
-                            {/* Winner details stacked vertically on mobile */}
-                            <div className="flex flex-col items-center space-y-3 sm:flex-row sm:space-y-0 sm:space-x-8 w-full max-w-xl">
+                          <div className="bg-green-100 border-l-8 border-green-700 p-5 rounded-lg flex flex-col sm:flex-row items-center gap-6">
+                            <img
+                              src={winner.profilepic ? `data:image/jpeg;base64,${winner.profilepic}` : '/default-profile.png'}
+                              className="w-20 h-20 rounded-full object-cover ring-4 ring-blue-400"
+                              alt="Winner"
+                            />
+                            <div className="flex flex-col items-center sm:items-start">
+                              <h3 className="text-xl font-bold text-green-800">{winner.name}</h3>
+                              <p className="text-sm text-gray-700 italic">{winner.partyslogan || 'No slogan available'}</p>
                               <img
-                                src={
-                                  winner.profilepic
-                                    ? `data:image/jpeg;base64,${winner.profilepic}`
-                                    : '/default-profile.png'
-                                }
-                                alt={`${winner.name || 'Winner'} Profile`}
-                                className="w-20 h-20 rounded-full object-cover ring-4 ring-blue-500 flex-shrink-0"
-                                loading="lazy"
+                                src={winner.partysign ? `data:image/png;base64,${winner.partysign}` : '/default-sign.png'}
+                                className="w-12 h-12 object-contain mt-2"
+                                alt="Party Sign"
                               />
-                              <img
-                                src={
-                                  winner.partysign
-                                    ? `data:image/jpeg;base64,${winner.partysign}`
-                                    : '/default-sign.png'
-                                }
-                                alt={`${winner.party || 'Party'} Sign`}
-                                className="w-16 h-16 object-contain"
-                                loading="lazy"
-                              />
-
-                              <div className="flex flex-col justify-center flex-grow min-w-0 text-center sm:text-left px-0 sm:px-4">
-                                <p className="font-bold text-xl text-blue-900 truncate max-w-xs">
-                                  {winner.name || 'Unnamed Winner'}
-                                </p>
-                                <p className="text-base italic text-gray-800 truncate max-w-xs">
-                                  {winner.partyslogan || 'No slogan available'}
-                                </p>
-                              </div>
-
-                              <div className="text-center sm:text-right min-w-[100px] mt-4 sm:mt-0">
-                                <p className="text-3xl font-extrabold text-blue-900">{winner.votes || 0}</p>
-                                <div className="mt-2 text-green-800 font-semibold text-lg flex items-center justify-center space-x-2 select-none">
-                                  <span>🏆</span>
-                                  <span>Winner</span>
-                                </div>
-                              </div>
+                            </div>
+                            <div className="text-center sm:text-right ml-auto">
+                              <p className="text-2xl font-extrabold text-blue-900">{winner.votes || 0}</p>
+                              <p className="text-green-700 font-semibold flex items-center gap-1 mt-1">
+                                🏆 Winner
+                              </p>
                             </div>
                           </div>
                         );
@@ -346,7 +231,6 @@ const Livepolls = () => {
           })
         )}
       </motion.main>
-
       <Footer />
     </>
   );
