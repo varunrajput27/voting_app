@@ -3,13 +3,18 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion } from "framer-motion";
-import { BellIcon } from '@heroicons/react/24/solid';  // <- import Heroicon
+import { BellIcon } from '@heroicons/react/24/solid';
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Scroll to top with a tiny delay to ensure page loads fully
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 50);
+
     axios
       .get(`${import.meta.env.VITE_BACKEND_LINK}/api/election/details`)
       .then((response) => {
@@ -20,6 +25,8 @@ const Notification = () => {
         console.error("Error fetching notifications:", error);
         setLoading(false);
       });
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -39,7 +46,6 @@ const Notification = () => {
       >
         <div className="container mx-auto px-6 pt-12">
           <div className="flex items-center justify-center mb-12 space-x-3">
-            {/* Use BellIcon component here */}
             <BellIcon className="w-14 h-14 text-blue-600 opacity-80 animate-bounce" />
             <h2 className="text-4xl font-extrabold text-blue-900 tracking-wide">
               Latest Election Notifications

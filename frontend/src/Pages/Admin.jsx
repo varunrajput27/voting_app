@@ -24,6 +24,7 @@ export default function Admin() {
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [disabledEndButtons, setDisabledEndButtons] = useState({});
 
+  // Load disabled buttons from localStorage
   useEffect(() => {
     const savedDisabledButtons = localStorage.getItem("disabledEndButtons");
     if (savedDisabledButtons) {
@@ -31,10 +32,20 @@ export default function Admin() {
     }
   }, []);
 
+  // Scroll to top on component mount with a small delay
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 50);
+    return () => clearTimeout(timer);
   }, []);
 
+  // Scroll to top on tab change immediately
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeTab]);
+
+  // Fetch notifications when activeTab is removeElection
   useEffect(() => {
     if (activeTab === "removeElection") {
       fetchNotifications();
@@ -147,7 +158,7 @@ export default function Admin() {
             <div className="flex flex-wrap justify-center bg-gray-100 rounded-full p-1 shadow-inner space-x-0 sm:space-x-2 gap-2">
               <button
                 onClick={() => setActiveTab("sendElection")}
-                className={`px-4 py-2 text-sm sm:px-6 sm:py-2 rounded-full  cursor-pointer font-medium transition ${
+                className={`px-4 py-2 text-sm sm:px-6 sm:py-2 rounded-full cursor-pointer font-medium transition ${
                   activeTab === "sendElection"
                     ? "bg-blue-600 text-white"
                     : "text-gray-700 hover:text-blue-600"
@@ -157,7 +168,7 @@ export default function Admin() {
               </button>
               <button
                 onClick={() => setActiveTab("removeElection")}
-                className={`px-4 py-2 text-sm sm:px-6 sm:py-2 rounded-full  cursor-pointer  font-medium transition ${
+                className={`px-4 py-2 text-sm sm:px-6 sm:py-2 rounded-full cursor-pointer font-medium transition ${
                   activeTab === "removeElection"
                     ? "bg-blue-600 text-white"
                     : "text-gray-700 hover:text-blue-600"
@@ -170,11 +181,7 @@ export default function Admin() {
 
           {/* Form section */}
           {activeTab === "sendElection" && (
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-6 text-gray-800"
-              noValidate
-            >
+            <form onSubmit={handleSubmit} className="space-y-6 text-gray-800" noValidate>
               <div>
                 <label htmlFor="electionPost" className="block mb-2 font-semibold text-gray-700">
                   Election Post
@@ -222,7 +229,7 @@ export default function Admin() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer  duration-200"
+                className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer duration-200"
               >
                 Send Notification
               </button>
@@ -234,8 +241,20 @@ export default function Admin() {
             <div className="space-y-6">
               {loadingNotifications ? (
                 <div className="flex justify-center my-6">
-                  <svg className="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <svg
+                    className="animate-spin h-8 w-8 text-blue-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                   </svg>
                 </div>
@@ -252,7 +271,9 @@ export default function Admin() {
                     >
                       <div className="flex items-start justify-between mb-4 flex-wrap gap-2">
                         <div>
-                          <h3 className="text-lg sm:text-xl font-semibold text-gray-800">{notification.electionPost}</h3>
+                          <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
+                            {notification.electionPost}
+                          </h3>
                           <p className="text-sm text-gray-500">{notification.location}</p>
                         </div>
                         <CheckCircleIcon className="w-6 h-6 text-green-500" />
@@ -261,7 +282,7 @@ export default function Admin() {
                         <button
                           onClick={() => handleEndElection(notification._id)}
                           disabled={disabledEndButtons[notification._id]}
-                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white text-sm font-semibold cursor-pointer  transition ${
+                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white text-sm font-semibold cursor-pointer transition ${
                             disabledEndButtons[notification._id]
                               ? "bg-gray-400 cursor-not-allowed"
                               : "bg-green-600 hover:bg-green-700"
@@ -271,7 +292,7 @@ export default function Admin() {
                         </button>
                         <button
                           onClick={() => handleDelete(notification._id)}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm  cursor-pointer  font-semibold rounded-md"
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm cursor-pointer font-semibold rounded-md"
                         >
                           <TrashIcon className="w-4 h-4" /> Delete Election
                         </button>

@@ -6,13 +6,14 @@ const ElectionPage = () => {
   const [elections, setElections] = useState([]);
   const [activeElection, setActiveElection] = useState(null);
   const [candidates, setCandidates] = useState([]);
-  const [hasVoted, setHasVoted] = useState(false);
+  const [hasVotedAnyElection, setHasVotedAnyElection] = useState(false); // Global vote flag
   const [showExitModal, setShowExitModal] = useState(false);
 
   const aadhar = localStorage.getItem('aadhar') || 'sample-aadhar-123';
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Fetch elections on mount
     const fetchElections = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_BACKEND_LINK}/elections`);
@@ -22,22 +23,29 @@ const ElectionPage = () => {
         console.error('Error fetching elections:', err);
       }
     };
+
     fetchElections();
   }, []);
 
+  // Check if user has voted in any election on page load
+  useEffect(() => {
+    const checkGlobalVoteStatus = async () => {
+      try {
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_LINK}/vote/status/global`, { aadhar });
+        setHasVotedAnyElection(res.data.hasVoted);
+      } catch (err) {
+        console.error('Error checking global vote status:', err);
+      }
+    };
+
+    checkGlobalVoteStatus();
+  }, [aadhar]);
+
   const enterElection = async (electionPost) => {
     try {
-      const [candidatesRes, voteStatusRes] = await Promise.all([
-        axios.get(`${import.meta.env.VITE_BACKEND_LINK}/candidates/${electionPost}`),
-        axios.post(`${import.meta.env.VITE_BACKEND_LINK}/vote/status`, {
-          aadhar,
-          electionPost,
-        }),
-      ]);
-
-      setCandidates(candidatesRes.data);
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_LINK}/candidates/${electionPost}`);
+      setCandidates(res.data);
       setActiveElection(electionPost);
-      setHasVoted(voteStatusRes.data.hasVoted);
     } catch (err) {
       console.error('Error entering election:', err);
     }
@@ -52,7 +60,7 @@ const ElectionPage = () => {
       });
 
       alert(res.data.message);
-      setHasVoted(true);
+      setHasVotedAnyElection(true); // Disable voting everywhere after a successful vote
     } catch (err) {
       alert(err.response?.data?.message || 'Vote failed');
     }
@@ -76,7 +84,7 @@ const ElectionPage = () => {
           onClick={confirmExit}
           className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-md transition cursor-pointer"
         >
-          Exit Election
+          Logout
         </button>
       </div>
 
@@ -148,14 +156,14 @@ const ElectionPage = () => {
 
                           <button
                             onClick={() => handleVote(cand._id)}
-                            disabled={hasVoted}
+                            disabled={hasVotedAnyElection}
                             className={`w-full sm:w-auto px-4 py-2 rounded-md font-semibold transition duration-200 cursor-pointer ${
-                              hasVoted
+                              hasVotedAnyElection
                                 ? 'bg-gray-400 text-white cursor-not-allowed'
                                 : 'bg-blue-600 hover:bg-blue-700 text-white'
                             }`}
                           >
-                            {hasVoted ? 'You already voted' : 'Vote'}
+                            {hasVotedAnyElection ? 'Voted' : 'Vote'}
                           </button>
                         </div>
                       </div>
@@ -172,8 +180,8 @@ const ElectionPage = () => {
       {showExitModal && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-md max-w-sm w-full">
-            <h2 className="text-lg font-bold mb-4 text-gray-800">Confirm Exit</h2>
-            <p className="text-gray-600 mb-6">Are you sure you want to exit the election page?</p>
+            <h2 className="text-lg font-bold mb-4 text-gray-800">Confirm Logout</h2>
+            <p className="text-gray-600 mb-6">Are you sure you want to Logout?</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-end">
               <button
                 onClick={cancelExit}
@@ -185,7 +193,7 @@ const ElectionPage = () => {
                 onClick={exitElection}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded cursor-pointer"
               >
-                Yes, Exit
+                Yes, Logout
               </button>
             </div>
           </div>
