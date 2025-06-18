@@ -45,15 +45,10 @@ const ElectionResults = () => {
     <div className="min-h-screen bg-gradient-to-b from-white via-sky-50 to-white py-16 px-6">
       {/* 2024 Result Banner - Reduced Size */}
       <div className="max-w-4xl mx-auto mb-8">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white font-extrabold text-3xl text-center rounded-full py-2 px-6 shadow-lg select-none tracking-wider">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white font-extrabold text-3xl text-center rounded-full py-3 px-6 shadow-lg select-none tracking-wider">
           🏆 2024 Election Results 🏆
         </div>
       </div>
-
-      <h1 className="text-4xl font-extrabold text-center text-blue-900 mb-14 drop-shadow-md tracking-wide">
-        🗳️ Previous Year Election Results
-      </h1>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto relative">
         {/* subtle pattern or decorative element behind */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_#bfdbfe,_transparent)] pointer-events-none -z-10 rounded-3xl"></div>

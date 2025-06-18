@@ -5,17 +5,17 @@ const HowVotingWorks = () => {
   const steps = [
     {
       title: ' Log In',
-      description: ' use  Aadharcard number  log in to securely access the voting system.',
+      description: ' use  Aadharcard number for  Log in to securely access the voting system.',
       icon: <FaSignInAlt className="text-white text-2xl" />,
     },
     {
-      title: 'Browse Available Polls',
-      description: 'Explore all current elections or polls available for voting.',
+      title: 'Browse Available elections',
+      description: 'Explore all current elections  available for voting.',
       icon: <FaPoll className="text-white text-2xl" />,
     },
     {
-      title: 'Select a Poll',
-      description: 'Choose the poll, review options, and prepare to vote.',
+      title: 'Select a elections',
+      description: 'Choose the elections, review , and prepare to vote.',
       icon: <FaVoteYea className="text-white text-2xl" />,
     },
     {
@@ -25,7 +25,7 @@ const HowVotingWorks = () => {
     },
     {
       title: 'View Results',
-      description: 'View live or final results depending on the poll rules.',
+      description: 'View live or final results depending on the election rules.',
       icon: <FaRegEye className="text-white text-2xl" />,
     },
     {

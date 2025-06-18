@@ -188,7 +188,7 @@ const OnlineVotingInfo = () => {
             whileTap={{ scale: 0.95 }}
             onClick={handleRegisterClick}
             disabled={exiting}
-            className={`bg-yellow-400 hover:bg-yellow-300 text-indigo-900 font-bold py-3 px-8 sm:py-4 sm:px-10 rounded-full text-lg sm:text-xl shadow-lg transition focus:outline-none focus:ring-4 focus:ring-yellow-300 ${
+            className={`bg-yellow-400 hover:bg-yellow-300 text-indigo-900 cursor-pointer  font-bold py-3 px-8 sm:py-4 sm:px-10 rounded-full text-lg sm:text-xl shadow-lg transition focus:outline-none focus:ring-4 focus:ring-yellow-300 ${
               exiting ? "opacity-70 cursor-not-allowed" : ""
             }`}
           >
