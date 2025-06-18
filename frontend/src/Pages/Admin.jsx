@@ -147,7 +147,7 @@ export default function Admin() {
             <div className="flex flex-wrap justify-center bg-gray-100 rounded-full p-1 shadow-inner space-x-0 sm:space-x-2 gap-2">
               <button
                 onClick={() => setActiveTab("sendElection")}
-                className={`px-4 py-2 text-sm sm:px-6 sm:py-2 rounded-full font-medium transition ${
+                className={`px-4 py-2 text-sm sm:px-6 sm:py-2 rounded-full  cursor-pointer font-medium transition ${
                   activeTab === "sendElection"
                     ? "bg-blue-600 text-white"
                     : "text-gray-700 hover:text-blue-600"
@@ -157,7 +157,7 @@ export default function Admin() {
               </button>
               <button
                 onClick={() => setActiveTab("removeElection")}
-                className={`px-4 py-2 text-sm sm:px-6 sm:py-2 rounded-full font-medium transition ${
+                className={`px-4 py-2 text-sm sm:px-6 sm:py-2 rounded-full  cursor-pointer  font-medium transition ${
                   activeTab === "removeElection"
                     ? "bg-blue-600 text-white"
                     : "text-gray-700 hover:text-blue-600"
@@ -222,7 +222,7 @@ export default function Admin() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer  duration-200"
               >
                 Send Notification
               </button>
@@ -261,7 +261,7 @@ export default function Admin() {
                         <button
                           onClick={() => handleEndElection(notification._id)}
                           disabled={disabledEndButtons[notification._id]}
-                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white text-sm font-semibold transition ${
+                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white text-sm font-semibold cursor-pointer  transition ${
                             disabledEndButtons[notification._id]
                               ? "bg-gray-400 cursor-not-allowed"
                               : "bg-green-600 hover:bg-green-700"
@@ -271,7 +271,7 @@ export default function Admin() {
                         </button>
                         <button
                           onClick={() => handleDelete(notification._id)}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-md"
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm  cursor-pointer  font-semibold rounded-md"
                         >
                           <TrashIcon className="w-4 h-4" /> Delete Election
                         </button>
