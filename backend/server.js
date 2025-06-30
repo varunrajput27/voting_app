@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 const cors = require("cors");
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://voting-frontend-mu.vercel.app'
+  'https://voting-frontend-six.vercel.app'
 ];
 
 app.use(cors({
