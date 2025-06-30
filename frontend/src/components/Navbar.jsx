@@ -11,7 +11,6 @@ const Navbar = () => {
 
   const chatRef = useRef(null);
 
-  // Detect screen size change
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
@@ -122,11 +121,11 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* Chat Window Mobile (Updated bottom spacing) */}
+      {/* ✅ Chat Window Mobile: Centered & Just Below Navbar */}
       {isChatOpen && isMobile && (
         <div
           ref={chatRef}
-          className="fixed bottom-10 right-4 w-80 h-96 bg-white border border-gray-300 rounded-lg shadow-2xl z-[1000] flex flex-col"
+          className="fixed top-20 left-1/2 transform -translate-x-1/2 w-11/12 max-w-sm h-96 bg-white border border-gray-300 rounded-lg shadow-2xl z-[1000] flex flex-col"
         >
           <ChatWindow />
         </div>
