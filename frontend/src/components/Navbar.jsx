@@ -122,11 +122,11 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* Chat Window Mobile */}
+      {/* Chat Window Mobile (Updated bottom spacing) */}
       {isChatOpen && isMobile && (
         <div
           ref={chatRef}
-          className="fixed bottom-20 right-4 w-80 h-96 bg-white border border-gray-300 rounded-lg shadow-2xl z-[1000] flex flex-col"
+          className="fixed bottom-10 right-4 w-80 h-96 bg-white border border-gray-300 rounded-lg shadow-2xl z-[1000] flex flex-col"
         >
           <ChatWindow />
         </div>
